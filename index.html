@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asep Ilyas & Ai Siti • WELCOME TO THE WEDDING</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap');
+    
+    body { margin:0; overflow:hidden; font-family:'Poppins', sans-serif; background:#000; color:white; }
+    canvas { display:block; }
+    
+    #cover {
+      position: absolute; top:0; left:0; width:100%; height:100%;
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), 
+                  url('https://picsum.photos/id/1015/1920/1080') center/cover;
+      display:flex; align-items:center; justify-content:center; flex-direction:column;
+      z-index: 100; transition: opacity 2s ease;
+    }
+    .couple { width:280px; border-radius:50%; border:12px solid rgba(255,255,255,0.9); box-shadow:0 20px 40px rgba(0,0,0,0.4); }
+    
+    .panel {
+      position: absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+      background:rgba(255,255,255,0.95); color:#333; padding:30px 40px; border-radius:20px;
+      text-align:center; max-width:420px; box-shadow:0 15px 35px rgba(0,0,0,0.3);
+      opacity:0; transition:all 1.5s ease; pointer-events:none;
+      border:3px solid #f8c4d8;
+    }
+    .panel.visible { opacity:1; transform:translate(-50%, -50%) scale(1); }
+    
+    button {
+      margin-top:30px; padding:16px 40px; font-size:1.2rem; border:none; border-radius:50px;
+      background:white; color:#e07a9c; font-weight:600; cursor:pointer;
+      box-shadow:0 10px 25px rgba(224,122,156,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER -->
+  <div id="cover">
+    <div class="text-center">
+      <h1 style="font-family:'Playfair Display',serif; font-size:3.8rem; margin:0;">Asep Ilyas</h1>
+      <p style="font-size:2rem; margin:10px 0;">&</p>
+      <h1 style="font-family:'Playfair Display',serif; font-size:3.8rem; margin:0;">Ai Siti</h1>
+      
+      <img src="https://picsum.photos/id/1011/400/400" alt="Pasangan Kartun" class="couple mt-8">
+      
+      <p style="margin-top:20px; font-size:1.3rem;">07 Juni 2026</p>
+      
+      <button onclick="startCinematic()">Buka Undangan</button>
+    </div>
+  </div>
+
+  <!-- PANEL TEKS -->
+  <div id="panel1" class="panel">...</div>
+  <div id="panel2" class="panel">...</div>
+  <div id="panel3" class="panel">...</div>
+  <div id="panel4" class="panel">...</div>
+  <div id="panel5" class="panel">...</div>
+
+  <script>
+    let scene, camera, renderer, petals = [];
+    let audio;
+
+    function initThree() {
+      scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x88ddbb, 15, 80);
+
+      camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 200);
+      camera.position.set(0, 10, 35);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      document.body.appendChild(renderer.domElement);
+
+      // Cahaya lembut
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const sun = new THREE.DirectionalLight(0xfff0cc, 1.1);
+      sun.position.set(15, 25, 20);
+      scene.add(sun);
+
+      // Tanah
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(120, 120),
+        new THREE.MeshLambertMaterial({ color: 0x99cc99 })
+      );
+      ground.rotation.x = -Math.PI/2;
+      scene.add(ground);
+
+      createPetals(180);
+      createCouple();
+      createGate();
+    }
+
+    function createPetals(count) {
+      for(let i = 0; i < count; i++) {
+        const petal = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.8, 1.1),
+          new THREE.MeshBasicMaterial({ 
+            color: Math.random() > 0.5 ? 0xff8ec8 : 0xffb3d1,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.9
+          })
+        );
+        petal.position.set(
+          (Math.random()-0.5)*80,
+          Math.random()*50 + 10,
+          (Math.random()-0.5)*60 - 10
+        );
+        petal.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+        scene.add(petal);
+        petals.push(petal);
+      }
+    }
+
+    function createCouple() {
+      const group = new THREE.Group();
+      const headMat = new THREE.MeshLambertMaterial({color: 0xffd4b3});
+      
+      const head1 = new THREE.Mesh(new THREE.SphereGeometry(1.8, 32, 32), headMat);
+      head1.position.set(-3.5, 7, -8);
+      const head2 = head1.clone();
+      head2.position.x = 3.5;
+      
+      group.add(head1, head2);
+      scene.add(group);
+    }
+
+    function createGate() {
+      const mat = new THREE.MeshLambertMaterial({color: 0xe8d5a3});
+      const left = new THREE.Mesh(new THREE.BoxGeometry(1.5, 12, 0.6), mat);
+      const right = left.clone();
+      left.position.set(-6, 6, 5);
+      right.position.set(6, 6, 5);
+      scene.add(left, right);
+      window.gateLeft = left;
+      window.gateRight = right;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      petals.forEach(p => {
+        p.position.y -= 0.12;
+        p.rotation.z += 0.015;
+        if (p.position.y < -8) p.position.y = 55;
+      });
+      
+      renderer.render(scene, camera);
+    }
+
+    // ====================== TIMELINE CINEMATIC ======================
+    function startCinematic() {
+      document.getElementById('cover').style.opacity = '0';
+      setTimeout(() => document.getElementById('cover').style.display = 'none', 2000);
+
+      initThree();
+      animate();
+
+      // Mainkan musik piano
+      audio = new Audio('https://assets.mixkit.co/music/preview/2510/2510-preview.mp3'); // Piano calm
+      audio.loop = true;
+      audio.volume = 0.65;
+      audio.play().catch(() => {});
+
+      // Gerbang terbuka
+      gsap.to(window.gateLeft.rotation, { y: -1.4, duration: 3.5, delay: 0.5, ease: "power2.out" });
+      gsap.to(window.gateRight.rotation, { y: 1.4, duration: 3.5, delay: 0.5, ease: "power2.out" });
+
+      // Drone journey
+      const tl = gsap.timeline();
+
+      tl.to(camera.position, { x:0, y:12, z:15, duration:8, ease:"power2.inOut", delay:2 })
+        .to(camera.position, { x:0, y:14, z:-12, duration:12, ease:"power2.inOut" })
+        .to(camera.position, { x:-18, y:18, z:-25, duration:10, ease:"power2.inOut" })
+        .to(camera.position, { x:0, y:12, z:-45, duration:12, ease:"power2.inOut" })
+        .to(camera.position, { x:15, y:10, z:-30, duration:10, ease:"power2.inOut" });
+
+      // Tampilkan Panel dengan jeda
+      showPanel(1, 6000);   // Pintu 1 - Basmalah & Salam
+      showPanel(2, 16000);  // Nama & Tanggal
+      showPanel(3, 28000);  // Akad & Resepsi
+      showPanel(4, 39000);  // Lokasi
+      showPanel(5, 50000);  // Penutup + Norek
+    }
+
+    function showPanel(n, delay) {
+      setTimeout(() => {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+        
+        const panel = document.getElementById(`panel${n}`);
+        panel.classList.add('visible');
+        
+        // Sembunyikan otomatis setelah 8 detik
+        setTimeout(() => panel.classList.remove('visible'), 8000);
+      }, delay);
+    }
+
+    // ================== ISI PANEL ==================
+    // Panel 1
+    document.getElementById('panel1').innerHTML = `
+      <h2 style="font-size:1.6rem; margin-bottom:15px; color:#e07a9c;">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ</h2>
+      <p style="font-size:1.4rem; margin:15px 0;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+      <p style="margin-top:20px; line-height:1.6;">
+        Dengan memohon rahmat Allah SWT,<br>
+        kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.
+      </p>
+      <p style="margin-top:25px; font-size:0.95rem; font-style:italic;">
+        "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."<br>
+        <strong>(QS. Ar-Rum: 21)</strong>
+      </p>
+    `;
+
+    // Panel 2
+    document.getElementById('panel2').innerHTML = `
+      <h2 style="font-size:2.2rem; color:#e07a9c;">Asep Ilyas</h2>
+      <p style="font-size:2.8rem; margin:10px 0; color:#999;">&</p>
+      <h2 style="font-size:2.2rem; color:#e07a9c;">Ai Siti</h2>
+      <p style="margin-top:25px; font-size:1.5rem;">Minggu, 07 Juni 2026</p>
+    `;
+
+    // Panel 3
+    document.getElementById('panel3').innerHTML = `
+      <h2 style="color:#e07a9c; margin-bottom:20px;">Rangkaian Acara</h2>
+      <p><strong>Akad Nikah</strong><br> pukul 08.00 WIB</p>
+      <p style="margin:20px 0;"><strong>Resepsi</strong><br> pukul 10.00 WIB s.d selesai</p>
+    `;
+
+    // Panel 4
+    document.getElementById('panel4').innerHTML = `
+      <h2 style="color:#e07a9c;">Lokasi Acara</h2>
+      <p style="margin-top:20px; line-height:1.7;">
+        Kampung Citundun, RT.003 / RW.008<br>
+        Desa Setiawargi, Kec. Tamansari<br>
+        Kab. Tasikmalaya, Jawa Barat 46196
+      </p>
+    `;
+
+    // Panel 5
+    document.getElementById('panel5').innerHTML = `
+      <h2 style="color:#e07a9c;">Terima Kasih</h2>
+      <p style="margin:20px 0; line-height:1.6;">
+        Atas kehadiran dan doa restu Bapak/Ibu/Saudara/i,<br>
+        kami ucapkan terima kasih yang sebesar-besarnya.
+      </p>
+      <p style="margin-top:25
