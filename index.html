@@ -1,251 +1,408 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Asep Ilyas & Ai Siti • WELCOME TO THE WEDDING</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan - Asep & Ai Siti</title>
     
-    body { margin:0; overflow:hidden; font-family:'Poppins', sans-serif; background:#000; color:white; }
-    canvas { display:block; }
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    #cover {
-      position: absolute; top:0; left:0; width:100%; height:100%;
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), 
-                  url('https://picsum.photos/id/1015/1920/1080') center/cover;
-      display:flex; align-items:center; justify-content:center; flex-direction:column;
-      z-index: 100; transition: opacity 2s ease;
-    }
-    .couple { width:280px; border-radius:50%; border:12px solid rgba(255,255,255,0.9); box-shadow:0 20px 40px rgba(0,0,0,0.4); }
-    
-    .panel {
-      position: absolute; top:50%; left:50%; transform:translate(-50%, -50%);
-      background:rgba(255,255,255,0.95); color:#333; padding:30px 40px; border-radius:20px;
-      text-align:center; max-width:420px; box-shadow:0 15px 35px rgba(0,0,0,0.3);
-      opacity:0; transition:all 1.5s ease; pointer-events:none;
-      border:3px solid #f8c4d8;
-    }
-    .panel.visible { opacity:1; transform:translate(-50%, -50%) scale(1); }
-    
-    button {
-      margin-top:30px; padding:16px 40px; font-size:1.2rem; border:none; border-radius:50px;
-      background:white; color:#e07a9c; font-weight:600; cursor:pointer;
-      box-shadow:0 10px 25px rgba(224,122,156,0.3);
-    }
-  </style>
+    <style>
+        :root {
+            --cream: #faf8f5;
+            --sage: #8da399;
+            --rose-gold: #d4a373;
+            --text-dark: #4a4a4a;
+            --accent: #e9edc9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, .font-aesthetic {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .font-formal {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Flower Corners Decoration */
+        .flower-decor {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            z-index: 10;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .top-left { top: 10px; left: 10px; border-left: 2px solid var(--sage); border-top: 2px solid var(--sage); padding: 5px; }
+        .top-right { top: 10px; right: 10px; border-right: 2px solid var(--sage); border-top: 2px solid var(--sage); padding: 5px; }
+        .bottom-left { bottom: 10px; left: 10px; border-left: 2px solid var(--sage); border-bottom: 2px solid var(--sage); padding: 5px; }
+        .bottom-right { bottom: 10px; right: 10px; border-right: 2px solid var(--sage); border-bottom: 2px solid var(--sage); padding: 5px; }
+
+        /* Falling Petals Animation */
+        #petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+        .petal {
+            position: absolute;
+            background-color: #ffdae0;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            min-height: 50vh;
+        }
+
+        /* Cover Section */
+        #cover {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(250, 248, 245, 0.4), rgba(250, 248, 245, 0.4)), 
+                        url('https://images.unsplash.com/photo-1501333441792-41610df747e0?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .cover-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .cartoon-couple {
+            width: 180px;
+            margin: 20px 0;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .btn-open {
+            background-color: var(--sage);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .btn-open:hover { background-color: var(--rose-gold); transform: scale(1.05); }
+
+        /* Profil Section */
+        .couple-name {
+            font-size: 3.5rem;
+            color: var(--sage);
+            margin: 10px 0;
+        }
+
+        /* Card Section */
+        .event-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .event-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            border: 1px solid var(--accent);
+        }
+
+        /* RSVP & Stats */
+        .rsvp-form {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .stats-box {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .comment-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        .comment-item {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .couple-name { font-size: 2.5rem; }
+            .event-card { min-width: 100%; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- COVER -->
-  <div id="cover">
-    <div class="text-center">
-      <h1 style="font-family:'Playfair Display',serif; font-size:3.8rem; margin:0;">Asep Ilyas</h1>
-      <p style="font-size:2rem; margin:10px 0;">&</p>
-      <h1 style="font-family:'Playfair Display',serif; font-size:3.8rem; margin:0;">Ai Siti</h1>
-      
-      <img src="https://picsum.photos/id/1011/400/400" alt="Pasangan Kartun" class="couple mt-8">
-      
-      <p style="margin-top:20px; font-size:1.3rem;">07 Juni 2026</p>
-      
-      <button onclick="startCinematic()">Buka Undangan</button>
-    </div>
-  </div>
+    <div id="petals-container"></div>
 
-  <!-- PANEL TEKS -->
-  <div id="panel1" class="panel">...</div>
-  <div id="panel2" class="panel">...</div>
-  <div id="panel3" class="panel">...</div>
-  <div id="panel4" class="panel">...</div>
-  <div id="panel5" class="panel">...</div>
+    <section id="cover">
+        <div class="cover-content" data-aos="fade-up" data-aos-duration="1500">
+            <p class="font-formal">Welcome to the Wedding</p>
+            <h1 class="couple-name">Asep Ilyas & Ai Siti</h1>
+            
+            <img src="https://cdn-icons-png.flaticon.com/512/3663/3663335.png" alt="Couple" class="cartoon-couple">
+            
+            <div style="margin-top: 20px;">
+                <i class="fa-solid fa-envelope" style="color: var(--sage); display: block; margin-bottom: 5px;"></i>
+                <a href="#intro" class="btn-open">Buka Undangan</a>
+            </div>
+        </div>
+    </section>
 
-  <script>
-    let scene, camera, renderer, petals = [];
-    let audio;
-
-    function initThree() {
-      scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x88ddbb, 15, 80);
-
-      camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 200);
-      camera.position.set(0, 10, 35);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      document.body.appendChild(renderer.domElement);
-
-      // Cahaya lembut
-      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-      const sun = new THREE.DirectionalLight(0xfff0cc, 1.1);
-      sun.position.set(15, 25, 20);
-      scene.add(sun);
-
-      // Tanah
-      const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(120, 120),
-        new THREE.MeshLambertMaterial({ color: 0x99cc99 })
-      );
-      ground.rotation.x = -Math.PI/2;
-      scene.add(ground);
-
-      createPetals(180);
-      createCouple();
-      createGate();
-    }
-
-    function createPetals(count) {
-      for(let i = 0; i < count; i++) {
-        const petal = new THREE.Mesh(
-          new THREE.PlaneGeometry(0.8, 1.1),
-          new THREE.MeshBasicMaterial({ 
-            color: Math.random() > 0.5 ? 0xff8ec8 : 0xffb3d1,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.9
-          })
-        );
-        petal.position.set(
-          (Math.random()-0.5)*80,
-          Math.random()*50 + 10,
-          (Math.random()-0.5)*60 - 10
-        );
-        petal.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-        scene.add(petal);
-        petals.push(petal);
-      }
-    }
-
-    function createCouple() {
-      const group = new THREE.Group();
-      const headMat = new THREE.MeshLambertMaterial({color: 0xffd4b3});
-      
-      const head1 = new THREE.Mesh(new THREE.SphereGeometry(1.8, 32, 32), headMat);
-      head1.position.set(-3.5, 7, -8);
-      const head2 = head1.clone();
-      head2.position.x = 3.5;
-      
-      group.add(head1, head2);
-      scene.add(group);
-    }
-
-    function createGate() {
-      const mat = new THREE.MeshLambertMaterial({color: 0xe8d5a3});
-      const left = new THREE.Mesh(new THREE.BoxGeometry(1.5, 12, 0.6), mat);
-      const right = left.clone();
-      left.position.set(-6, 6, 5);
-      right.position.set(6, 6, 5);
-      scene.add(left, right);
-      window.gateLeft = left;
-      window.gateRight = right;
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      petals.forEach(p => {
-        p.position.y -= 0.12;
-        p.rotation.z += 0.015;
-        if (p.position.y < -8) p.position.y = 55;
-      });
-      
-      renderer.render(scene, camera);
-    }
-
-    // ====================== TIMELINE CINEMATIC ======================
-    function startCinematic() {
-      document.getElementById('cover').style.opacity = '0';
-      setTimeout(() => document.getElementById('cover').style.display = 'none', 2000);
-
-      initThree();
-      animate();
-
-      // Mainkan musik piano
-      audio = new Audio('https://assets.mixkit.co/music/preview/2510/2510-preview.mp3'); // Piano calm
-      audio.loop = true;
-      audio.volume = 0.65;
-      audio.play().catch(() => {});
-
-      // Gerbang terbuka
-      gsap.to(window.gateLeft.rotation, { y: -1.4, duration: 3.5, delay: 0.5, ease: "power2.out" });
-      gsap.to(window.gateRight.rotation, { y: 1.4, duration: 3.5, delay: 0.5, ease: "power2.out" });
-
-      // Drone journey
-      const tl = gsap.timeline();
-
-      tl.to(camera.position, { x:0, y:12, z:15, duration:8, ease:"power2.inOut", delay:2 })
-        .to(camera.position, { x:0, y:14, z:-12, duration:12, ease:"power2.inOut" })
-        .to(camera.position, { x:-18, y:18, z:-25, duration:10, ease:"power2.inOut" })
-        .to(camera.position, { x:0, y:12, z:-45, duration:12, ease:"power2.inOut" })
-        .to(camera.position, { x:15, y:10, z:-30, duration:10, ease:"power2.inOut" });
-
-      // Tampilkan Panel dengan jeda
-      showPanel(1, 6000);   // Pintu 1 - Basmalah & Salam
-      showPanel(2, 16000);  // Nama & Tanggal
-      showPanel(3, 28000);  // Akad & Resepsi
-      showPanel(4, 39000);  // Lokasi
-      showPanel(5, 50000);  // Penutup + Norek
-    }
-
-    function showPanel(n, delay) {
-      setTimeout(() => {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+    <section id="intro">
+        <div class="flower-decor top-left"><i class="fa-solid fa-leaf"></i></div>
+        <div class="flower-decor bottom-right"><i class="fa-solid fa-leaf"></i></div>
         
-        const panel = document.getElementById(`panel${n}`);
-        panel.classList.add('visible');
+        <div data-aos="fade-up">
+            <h3 style="font-weight: 300;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</h3>
+            <p style="margin: 20px auto; max-width: 600px; font-style: italic;">
+                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."
+                <br><strong>(QS. Ar-Rum: 21)</strong>
+            </p>
+            <p>Assalamu’alaikum Warahmatullahi Wabarakatuh</p>
+            <p style="margin-top: 10px;">Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia kami.</p>
+        </div>
+    </section>
+
+    <section id="couple" style="background-color: #fff;">
+        <div class="flower-decor top-right"><i class="fa-solid fa-leaf"></i></div>
         
-        // Sembunyikan otomatis setelah 8 detik
-        setTimeout(() => panel.classList.remove('visible'), 8000);
-      }, delay);
-    }
+        <div data-aos="zoom-in">
+            <h2 class="couple-name">Asep Ilyas</h2>
+            <p>Putra dari Bapak Nama Ayah & Ibu Nama Ibu</p>
+            <h2 style="font-size: 2rem; margin: 10px 0;">&</h2>
+            <h2 class="couple-name">Ai Siti Rahmawati</h2>
+            <p>Putri dari Bapak Nama Ayah & Ibu Nama Ibu</p>
+            
+            <div style="margin-top: 40px; border-top: 1px solid var(--sage); padding-top: 20px; display: inline-block;">
+                <p class="font-formal">Minggu, 07 Juni 2026</p>
+            </div>
+        </div>
+    </section>
 
-    // ================== ISI PANEL ==================
-    // Panel 1
-    document.getElementById('panel1').innerHTML = `
-      <h2 style="font-size:1.6rem; margin-bottom:15px; color:#e07a9c;">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ</h2>
-      <p style="font-size:1.4rem; margin:15px 0;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
-      <p style="margin-top:20px; line-height:1.6;">
-        Dengan memohon rahmat Allah SWT,<br>
-        kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.
-      </p>
-      <p style="margin-top:25px; font-size:0.95rem; font-style:italic;">
-        "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."<br>
-        <strong>(QS. Ar-Rum: 21)</strong>
-      </p>
-    `;
+    <section id="event">
+        <div data-aos="fade-up">
+            <h2 class="font-aesthetic" style="font-size: 3rem;">Rangkaian Acara</h2>
+            <div class="event-container">
+                <div class="event-card" data-aos="fade-right">
+                    <i class="fa-solid fa-heart-circle-check" style="font-size: 2rem; color: var(--sage);"></i>
+                    <h3 class="font-formal" style="margin: 15px 0;">Akad Nikah</h3>
+                    <p>08.00 - 10.00 WIB</p>
+                    <p>Lokasi Kediaman Mempelai Wanita</p>
+                    <p>Kampung citundun, RT.003/RW.008, Setiawargi, Kec. Tamansari, Kab. Tasikmalaya, Jawa Barat 46196</p>
+                </div>
+                <div class="event-card" data-aos="fade-left">
+                    <i class="fa-solid fa-champagne-glasses" style="font-size: 2rem; color: var(--sage);"></i>
+                    <h3 class="font-formal" style="margin: 15px 0;">Resepsi</h3>
+                    <p>10.00 - Selesai</p>
+                    <p>kediaman mempelai wanita</p>
+                    <p>Kampung citundun, RT.003/RW.008, Setiawargi, Kec. Tamansari, Kab. Tasikmalaya, Jawa Barat 46196</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Panel 2
-    document.getElementById('panel2').innerHTML = `
-      <h2 style="font-size:2.2rem; color:#e07a9c;">Asep Ilyas</h2>
-      <p style="font-size:2.8rem; margin:10px 0; color:#999;">&</p>
-      <h2 style="font-size:2.2rem; color:#e07a9c;">Ai Siti</h2>
-      <p style="margin-top:25px; font-size:1.5rem;">Minggu, 07 Juni 2026</p>
-    `;
+    <section id="maps">
+        <div data-aos="fade-up">
+            <h2 class="font-aesthetic" style="font-size: 3rem;">Lokasi Acara</h2>
+            <div style="width: 100%; height: 350px; background: #eee; border-radius: 15px; display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+                <p><i class="fa-solid fa-location-dot"></i> [Google Maps Insert Here - Ganti di Kode]</p>
+                </div>
+        </div>
+    </section>
 
-    // Panel 3
-    document.getElementById('panel3').innerHTML = `
-      <h2 style="color:#e07a9c; margin-bottom:20px;">Rangkaian Acara</h2>
-      <p><strong>Akad Nikah</strong><br> pukul 08.00 WIB</p>
-      <p style="margin:20px 0;"><strong>Resepsi</strong><br> pukul 10.00 WIB s.d selesai</p>
-    `;
+    <section id="gift" style="background-color: var(--accent);">
+        <div data-aos="zoom-in">
+            <h2 class="font-aesthetic" style="font-size: 3rem;">Wedding Gift</h2>
+            <p style="margin: 20px auto; max-width: 500px;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan tanda kasih, dapat melalui:</p>
+            
+            <div class="event-card" style="margin: 0 auto;">
+                <p><strong>Bank BRI</strong></p>
+                <p>No. Rekening: 444401015688504</p>
+                <p>A/N: Asep Ilyas</p>
+                <button onclick="alert('Nomor rekening berhasil disalin!')" style="margin-top: 10px; border: 1px solid var(--sage); background: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Salin Rekening</button>
+            </div>
+        </div>
+    </section>
 
-    // Panel 4
-    document.getElementById('panel4').innerHTML = `
-      <h2 style="color:#e07a9c;">Lokasi Acara</h2>
-      <p style="margin-top:20px; line-height:1.7;">
-        Kampung Citundun, RT.003 / RW.008<br>
-        Desa Setiawargi, Kec. Tamansari<br>
-        Kab. Tasikmalaya, Jawa Barat 46196
-      </p>
-    `;
+    <section id="rsvp">
+        <div data-aos="fade-up">
+            <h2 class="font-aesthetic" style="font-size: 3rem;">Konfirmasi Kehadiran</h2>
+            <div class="stats-box">
+                <div><strong id="count-hadir">0</strong><br>Hadir</div>
+                <div><strong id="count-tidak">0</strong><br>Tidak Hadir</div>
+                <div><strong id="count-total">0</strong><br>Total</div>
+            </div>
+            
+            <div class="rsvp-form">
+                <form id="attendanceForm">
+                    <input type="text" id="name" placeholder="Nama Lengkap" required>
+                    <select id="status" required>
+                        <option value="">Konfirmasi Kehadiran</option>
+                        <option value="Hadir">Hadir</option>
+                        <option value="Tidak Hadir">Tidak Hadir</option>
+                    </select>
+                    <textarea id="message" rows="3" placeholder="Ucapan & Doa Restu"></textarea>
+                    <button type="submit" class="btn-open" style="width: 100%;">Kirim Konfirmasi</button>
+                </form>
+                
+                <div class="comment-list" id="commentList">
+                    </div>
+            </div>
+        </div>
+    </section>
 
-    // Panel 5
-    document.getElementById('panel5').innerHTML = `
-      <h2 style="color:#e07a9c;">Terima Kasih</h2>
-      <p style="margin:20px 0; line-height:1.6;">
-        Atas kehadiran dan doa restu Bapak/Ibu/Saudara/i,<br>
-        kami ucapkan terima kasih yang sebesar-besarnya.
-      </p>
-      <p style="margin-top:25
+    <section id="closing" style="padding-bottom: 100px;">
+        <div class="flower-decor bottom-left"><i class="fa-solid fa-leaf"></i></div>
+        <div data-aos="fade-up">
+            <p>Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+            <h2 class="couple-name" style="margin-top: 30px;">Wassalamu’alaikum</h2>
+            <p class="font-formal" style="margin-top: 50px;">Asep & Ai Siti</p>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inisialisasi AOS
+        AOS.init({
+            duration: 1000,
+            once: false
+        });
+
+        // Efek Bunga Berguguran
+        function createPetal() {
+            const container = document.getElementById('petals-container');
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            
+            const size = Math.random() * 15 + 10 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            
+            container.appendChild(petal);
+            
+            setTimeout(() => {
+                petal.remove();
+            }, 5000);
+        }
+        setInterval(createPetal, 300);
+
+        // RSVP Logic
+        let stats = { hadir: 0, tidak: 0, total: 0 };
+        const form = document.getElementById('attendanceForm');
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const status = document.getElementById('status').value;
+            const message = document.getElementById('message').value;
+            
+            // Update Stats
+            if(status === "Hadir") stats.hadir++;
+            else stats.tidak++;
+            stats.total++;
+            
+            document.getElementById('count-hadir').innerText = stats.hadir;
+            document.getElementById('count-tidak').innerText = stats.tidak;
+            document.getElementById('count-total').innerText = stats.total;
+            
+            // Add Comment
+            const list = document.getElementById('commentList');
+            const item = document.createElement('div');
+            item.className = 'comment-item';
+            item.innerHTML = `<strong>${name}</strong> - <small>${status}</small><br>"${message}"`;
+            list.prepend(item);
+            
+            form.reset();
+            alert("Terima kasih atas konfirmasinya!");
+        });
+
+        // Smooth Scroll untuk tombol buka undangan
+        document.querySelector('.btn-open').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#intro').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
